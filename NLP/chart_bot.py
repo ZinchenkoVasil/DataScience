@@ -1,5 +1,6 @@
 import numpy as np
 
+#тут команду HELP добавлять не стал, можно добавить
 QUESTIONS_AND_ANSWERS = \
 np.array([
 ['кто ты?','Меня зовут Joshu, я твой персональный помощник. Помогу тебе потратить день максимально продуктивно!'],
@@ -35,7 +36,6 @@ class ChartBot:
         self.matrix = []
         i = 0
         for question in QUESTIONS_AND_ANSWERS[:,0]:
-           # print(question,'------',self.preprocess_txt(question))
             lst_q = self.preprocess_txt(question)
             self.matrix.append(lst_q)
 
@@ -47,6 +47,8 @@ class ChartBot:
 
     def create_answer(self,question):
         lst_q = self.preprocess_txt(question)
+        #смысл следующего кода:
+        #у редко встречающихся слов большая информативность и соответственно их надо учитывать с БОЛЬШИМ весом
         rating = {} # общий рейтинг для всех слов
         for word_q in lst_q:
             i = 0
@@ -74,6 +76,9 @@ class ChartBot:
         return answer_text
 
 if __name__ == '__main__':
+    #запустить 1 раз вначале
     chart_bot = ChartBot()
-    answer = chart_bot.create_answer("в чем твоя задача?")
+    #запускать для каждого введенного пользователем сообщения
+    message_text = "в чем твоя задача?"
+    answer = chart_bot.create_answer(message_text)
     print(answer)
