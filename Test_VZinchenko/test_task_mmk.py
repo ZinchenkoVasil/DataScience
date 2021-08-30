@@ -32,10 +32,11 @@ def preprocess_txt(morpher, line):
 #    spls = [i for i in spls if i not in sw and i != ""]
     return spls
 
-path = '/content/sample_data/paraphrases.xml'
+path = 'resources/paraphrases.xml'
 
 from lxml import objectify
 import pandas as pd
+
 
 xml = objectify.parse(path)
 root = xml.getroot()
@@ -68,7 +69,7 @@ df
 list_text = list(df['text_1']) + list(df['text_2'])
 
 dict_words = {}
-i = 0
+i = 1
 morpher = MorphAnalyzer()
 for text in list_text:
   #разбить предложения на слова
@@ -234,11 +235,12 @@ def get_paraphrase_classes(phrase1, phrase2):
     while i >= 0:
     #проверка на наличие слова в словаре
         if words[i] in dict_words.keys(): 
-            cur_text[j] = dict_words[words[i]]
+            cur_text[j] = dict_words[words[i]]  
         else:
-            cur_text[j] = len(dict_words.keys()) + 1    
-        i -= 1
+            cur_text[j] = np.random.randint(1, 1000)
+      
         j -= 1
+        i -= 1    
 #----------------------------
 #не забудь нули добавлять в НАЧАЛО
     question = np.zeros(shape=(num_samples, max_length))
@@ -253,10 +255,10 @@ def get_paraphrase_classes(phrase1, phrase2):
         if words[i] in dict_words.keys(): 
             cur_text[j] = dict_words[words[i]]
         else:
-            cur_text[j] = len(dict_words.keys()) + 1    
-        i -= 1
+            cur_text[j] = np.random.randint(1, 1000)
+        
         j -= 1
-
+        i -= 1       
     predictions = model.predict([text, question])
     n = np.argmax(predictions[i,:])
 #Paraphrase classes: -1: non-paraphrases, 0: loose paraphrases, 1: strict paraphrases.
@@ -266,11 +268,12 @@ def get_paraphrase_classes(phrase1, phrase2):
     else:
         return True
 
-phrase1 = "Полицейским разрешат стрелять на поражение по гражданам с травматикой."
-phrase2 = "Полиции могут разрешить стрелять по хулиганам с травматикой."
+phrase1 = "Вернувшихся из Сирии россиян волнует вопрос трудоустройства на родине."#"Полицейским разрешат стрелять на поражение по гражданам с травматикой."
+phrase2 = "Самолеты МЧС вывезут россиян из разрушенной Сирии."#"Полиции могут разрешить стрелять по хулиганам с травматикой."
 
 paraphrase_class = get_paraphrase_classes(phrase1, phrase2)
 if paraphrase_class:
     print("свободные или строгие перефразы")
 else:
     print('не являются перефразами')
+
